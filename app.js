@@ -2,20 +2,17 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var app = express();
+
+// MODELS
+var Campground = require("./models/campground");
+var Comment = require("./models/comment");
+// var User = require("./models/user");
+
+// SEEDING
+var seedDB = require("./seeds.js")
+
+seedDB();
 mongoose.connect("mongodb://localhost:27017/yelp_camp", {useNewUrlParser: true});
-
-
-// https://cdn.getyourguide.com/img/tour_img-1281708-146.jpg Arenal
-// https://www.govisitcostarica.co.cr/images/photos/full-irazu-volcano-crater.jpg irazu
-// https://www.govisitcostarica.co.cr/images/photos/full-poas-volcano-crater(1).jpg poas
-// Schema SetUp
-var campgroundSchema = new mongoose.Schema({
-  name: String,
-  image: String,
-  description: String
-});
-var Campground = mongoose.model("Campground", campgroundSchema);
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
@@ -51,7 +48,7 @@ app.post("/campgrounds", function(req, res){
 });
 
 app.get("/campgrounds/:id", function(req, res){
-  Campground.findById(req.params.id, function(error, foundCampground){
+  Campground.findById(req.params.id).populate("comments").exec(function(error, foundCampground){
     if(error){
       console.log(error);
     } else {
