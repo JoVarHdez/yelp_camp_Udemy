@@ -4,6 +4,7 @@ var mongoose = require("mongoose");
 var passport = require("passport");
 var passportLocal = require("passport-local");
 var passportMongoose = require("passport-local-mongoose");
+var methodOverride = require("method-override");
 var app = express();
 
 // ROUTES
@@ -18,7 +19,7 @@ var User = require("./models/user");
 
 // SEEDING
 var seedDB = require("./seeds.js")
-seedDB();
+// seedDB();
 
 // SET UP MONGOOSE, BODY-PARSER, EJS, SEESION
 mongoose.connect("mongodb://localhost:27017/yelp_camp", {useNewUrlParser: true});
@@ -26,13 +27,14 @@ mongoose.set("useFindAndModify", false);
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
+
+// PASSPORT CONFIG
 app.use(require("express-session")({
   secret: "Holo",
   resave: false,
   saveUninitialized: false
 }));
-
-// PASSPORT CONFIG
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new passportLocal(User.authenticate()));
