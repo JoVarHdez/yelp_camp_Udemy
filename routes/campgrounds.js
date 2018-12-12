@@ -18,7 +18,7 @@ router.get("/new", middleware.isLoggedIn, function(req, res){
   res.render("campgrounds/new");
 });
 
-router.post("/", isLoggedIn, function(req, res){
+router.post("/", middleware.isLoggedIn, function(req, res){
   var name = req.body.name;
   var image = req.body.image;
   var description = req.body.description;
