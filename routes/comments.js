@@ -22,6 +22,7 @@ router.post("/", middleware.isLoggedIn, function(req, res){
     } else {
       Comment.create(req.body.comment, function(error, comment){
         if(error){
+          req.flash("error", "Something went wrong");
           console.log(error);
         } else {
           comment.author.id = req.user._id;
@@ -29,6 +30,7 @@ router.post("/", middleware.isLoggedIn, function(req, res){
           comment.save();
           campground.comments.push(comment);
           campground.save();
+          req.flash("success", "Successfully added comment!");
           res.redirect("/campgrounds/" + campground._id);
         }
       });
@@ -36,32 +38,36 @@ router.post("/", middleware.isLoggedIn, function(req, res){
   });
 });
 
-router.get("/:idComment/edit", middleware.checkCommentOwnership, function(req, res){
-  Comment.findById(req.params.idComment, function(error, foundComment){
-    if(error){
-      res.redirect("back");
-    } else {
-      res.render("comments/edit", {campground_id: req.params.id, comment: foundComment});
-    }
-  });
+router.get("/:idComment/edit", middleware.isLoggedIn,  middleware.checkCommentOwnership, function(req, res){
+   res.render("comments/edit", {campground_id: req.params.id, comment: req.comment});
 });
 
-router.put("/:idComment", middleware.checkCommentOwnership, function(req, res){
+router.put("/:idComment", middleware.isAdmin,  middleware.checkCommentOwnership, function(req, res){
   Comment.findByIdAndUpdate(req.params.idComment, req.body.comment, function(error, updatedComment){
     if(error){
-      res.redirect("back");
+      res.redirect("edit");
     } else {
       res.redirect("/campgrounds/" + req.params.id)
     }
   });
 });
 
-router.delete("/:idComment", middleware.checkCommentOwnership, function(req, res){
-  Comment.findOneAndRemove(req.params.idComment, function(error){
+router.delete("/:idComment", middleware.isLoggedIn,  middleware.checkCommentOwnership, function(req, res){
+  Campground.findByIdAndUpdate(req.params.id, {
+    $pull: {comments: req.comment.id}
+  }, function(error){
     if(error){
-      res.redirect("back");
+      req.flash("error", error.message);
+      res.redirect("/");
     } else {
-      res.redirect("/campgrounds/" + req.params.id);
+      req.comment.remove(function(error){
+        if(error){
+          req.flash("error", error.message);
+          return res.redirect("/");
+        }
+        req.flash("success", "Comment deleted!");
+        res.redirect("/campgrounds/" + req.params.id);
+      });
     }
   });
 });
