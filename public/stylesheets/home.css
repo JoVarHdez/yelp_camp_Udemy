@@ -83,3 +83,7 @@ body {
 .not {
   display: none;
 }
+
+footer {
+  display: none;
+}
