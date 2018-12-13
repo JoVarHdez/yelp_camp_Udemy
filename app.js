@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
@@ -26,7 +28,7 @@ var seedDB = require("./seeds.js")
 
 // SET UP MONGOOSE, BODY-PARSER, EJS, SEESION
 // mongoose.connect("mongodb://localhost:27017/yelp_camp", {useNewUrlParser: true});
-mongoose.connect("mongodb://Josue:root1234@ds133262.mlab.com:33262/yelp_camp", {useNewUrlParser: true});
+mongoose.connect(process.env.DATABASEURL, {useNewUrlParser: true});
 mongoose.set("useFindAndModify", false);
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));

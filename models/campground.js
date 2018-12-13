@@ -4,7 +4,7 @@ var campgroundSchema = new mongoose.Schema({
   name: String,
   image: String,
   description: String,
-  cost: Number,
+  price: Number,
   location: String,
   lat: Number,
   lng: Number,
@@ -21,8 +21,7 @@ var campgroundSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment"
     }
-  ],
-  price: String
+  ]
 });
 
 module.exports = mongoose.model("Campground", campgroundSchema);
