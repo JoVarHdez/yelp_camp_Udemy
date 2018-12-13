@@ -7,7 +7,7 @@ var NodeGeocoder = require("node-geocoder");
 var options = {
   provider: "google",
   httpAdapter: "https",
-  apikey: proccess.env.GEOCODER_API_KEY,
+  apikey: process.env.GEOCODER_API_KEY,
   formatter: null
 };
 
@@ -55,16 +55,7 @@ router.post("/", middleware.isLoggedIn, function(req, res){
     username: req.user.username
   };
   var price = req.body.price;
-  geocoder.geocode(req.body.location, function(error, data){
-    if(error || data.status === "ZERO_RESULTS"){
-      req.flash("error", "Invalid address.");
-      return res.redirect("back");
-    }
-    var lat = data.results[0].geometry.location.lat;
-    var lng = data.results[0].geometry.location.lng;
-    var location = data.results[0].formatted_address;
-    var newCampground = {name: name, image: image, description: desc, priec: price, author:author, location: location, lat: lat, lng: lng};
-  })
+  var newCampground = {name: name, image: image, description: description, price: price, author:author};
   Campground.create(newCampground, function(error, newCampground){
     if(error){
       console.log(error);
@@ -87,25 +78,22 @@ router.get("/:id", function(req, res){
 });
 
 router.get("/:id/edit", middleware.isLoggedIn,  middleware.checkCampgroundOwnership, function(req, res){
-    res.render("campgrounds/edit", {campground: req.campground});
+  Campground.findById(req.params.id, function(err, foundCampground){
+    res.render("campgrounds/edit", {campground: foundCampground});
+  });
 });
 
 router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
-  geocoder.geocode(req.body.location, function (error, data) {
-    var lat = data.results[0].geometry.location.lat;
-    var lng = data.results[0].geometry.location.lng;
-    var location = data.results[0].formatted_address;
-    var newData = {name: req.body.name, image: req.body.image, description: req.body.description, price: req.body.price, location: location, lat: lat, lng: lng};
-    Campground.findByIdAndUpdate(req.params.id, {$set: newData}, function(error, campground){
-        if(error){
-            req.flash("error", error.message);
-            res.redirect("back");
-        } else {
-            req.flash("success","Successfully Updated!");
-            res.redirect("/campgrounds/" + campground._id);
-        }
-    });
-});
+  var newData = {name: req.body.name, image: req.body.image, description: req.body.description, price: req.body.price};
+  Campground.findByIdAndUpdate(req.params.id, {$set: newData}, function(error, campground){
+      if(error){
+          req.flash("error", error.message);
+          res.redirect("back");
+      } else {
+          req.flash("success","Successfully Updated!");
+          res.redirect("/campgrounds/" + campground._id);
+      }
+  });
 });
 
 router.delete("/:id", middleware.isLoggedIn,  middleware.checkCampgroundOwnership, function(req, res){

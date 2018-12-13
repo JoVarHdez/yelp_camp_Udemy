@@ -10,7 +10,7 @@ var passportLocal = require("passport-local");
 var methodOverride = require("method-override");
 var app = express();
 
-require('dotenv').load();
+// require('dotenv').load();
 
 // ROUTES
 var commentRoutes = require("./routes/comments");
