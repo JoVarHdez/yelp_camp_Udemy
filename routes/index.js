@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 var express = require("express");
 var router = express.Router();
 var passport = require("passport");
@@ -15,9 +13,6 @@ router.get("/register", function(req, res){
 
 router.post("/register", function(req, res){
   var newUser = new User({username: req.body.username});
-  if(req.body.adminCode === process.env.ADMIN_CODE) {
-    newUser.isAdmin = true;
-  }
   User.register(newUser, req.body.password, function(error, user){
     if(error){
       req.flash("error", error.message);
