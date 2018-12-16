@@ -27,7 +27,6 @@ var seedDB = require("./seeds.js")
 // seedDB();
 
 // SET UP MONGOOSE, BODY-PARSER, EJS, SEESION
-// mongoose.connect("mongodb://localhost:27017/yelp_camp", {useNewUrlParser: true});
 mongoose.connect(process.env.DATABASEURL, {useNewUrlParser: true});
 mongoose.set("useFindAndModify", false);
 app.set("view engine", "ejs");
