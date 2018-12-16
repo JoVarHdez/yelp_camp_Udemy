@@ -2,16 +2,6 @@ var express = require("express");
 var router = express.Router();
 var Campground = require("../models/campground");
 var middleware = require("../middleware");
-var NodeGeocoder = require("node-geocoder");
-
-var options = {
-  provider: "google",
-  httpAdapter: "https",
-  apikey: process.env.GEOCODER_API_KEY,
-  formatter: null
-};
-
-var geocoder = NodeGeocoder(options);
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
