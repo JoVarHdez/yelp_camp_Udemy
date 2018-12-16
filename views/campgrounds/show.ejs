@@ -16,7 +16,7 @@
         <h4 class="card-title"><a href="#"><%= campground.name %></a></h4>
         <p class="card-text"><%= campground.description %></p>
         <span>
-          <em>Submitted by: <%= campground.author.username %>, <%= moment(campground.createdAt).fromNow() %></em>
+          <em>Submitted by: <a href="/user/<%= campground.author.id %>"><%= campground.author.username %></a>, <%= moment(campground.createdAt).fromNow() %></em>
         </span>
         <% if(currentUser && campground.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
           <div class="float-right">

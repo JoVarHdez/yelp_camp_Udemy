@@ -12,7 +12,16 @@ router.get("/register", function(req, res){
 });
 
 router.post("/register", function(req, res){
-  var newUser = new User({username: req.body.username});
+  var newUser = new User({
+                          username: req.body.username,
+                          email: req.body.email,
+                          firstName: req.body.firstName,
+                          lastName: req.body.lastName,
+                          avatar: req.body.image});
+
+  if(req.body.adminCode === process.env.ADMIN_CODE) {
+    newUser.isAdmin = true;
+  }
   User.register(newUser, req.body.password, function(error, user){
     if(error){
       req.flash("error", error.message);
@@ -44,6 +53,16 @@ router.get("/logout", function(req, res){
   req.logout();
   req.flash("success", "See you later!");
   res.redirect("/campgrounds");
+});
+
+router.get("/user/:idUser", function(req, res){
+  User.findById(req.params.idUser, function(error, foundUser){
+    if(error){
+      req.flash("error", "Something went wrong.");
+      res.redirect("/");
+    }
+      res.render("users/profile", {user: foundUser});
+  });
 });
 
 module.exports = router;
