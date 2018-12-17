@@ -1,7 +1,7 @@
 $(document).ready(function(){
   $("#createUser").validate({
     rules:{
-      name:{
+      firstName:{
         required: true,
         rangelength: [3,45]
       },
@@ -14,5 +14,5 @@ $(document).ready(function(){
     unhighligth:function(element, errorClass, validClass){
       $(element).parents(".form-group").removeClass("error");
     },
-  })
+  });
 });
