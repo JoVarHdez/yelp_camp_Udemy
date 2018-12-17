@@ -67,7 +67,7 @@ router.get("/user/:idUser", function(req, res){
         req.flash("error", "Something went Wrong.");
         res.redirect("back");
       }
-        res.render("users/profile", {user: foundUser, campgrounds: campgrounds});
+        res.render("users/show", {user: foundUser, campgrounds: campgrounds});
     });
   });
 });
