@@ -54,13 +54,13 @@ router.put("/:idComment", middleware.isAdmin,  middleware.checkCommentOwnership,
 
 router.delete("/:idComment", middleware.isLoggedIn,  middleware.checkCommentOwnership, function(req, res){
   Campground.findByIdAndUpdate(req.params.id, {
-    $pull: {comments: req.comment.id}
+    $pull: {comments: req.params.idComment}
   }, function(error){
     if(error){
       req.flash("error", error.message);
       res.redirect("/");
     } else {
-      req.comment.remove(function(error){
+      Comment.findByIdAndRemove(req.params.idComment, function(error){
         if(error){
           req.flash("error", error.message);
           return res.redirect("/");
