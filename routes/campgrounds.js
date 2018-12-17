@@ -69,7 +69,7 @@ router.get("/:id", function(req, res){
 });
 
 router.get("/:id/edit", middleware.isLoggedIn,  middleware.checkCampgroundOwnership, function(req, res){
-  Campground.findById(req.params.id, function(err, foundCampground){
+  Campground.findById(req.params.id, function(error, foundCampground){
     if(error){
       console.log(error);
     } else {
